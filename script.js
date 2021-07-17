@@ -46,50 +46,60 @@ const eventListeners = (() => {
       tempForImageSources.shift();
     }
   }
+  function handleSubmit(e) {
+    console.log(e.target.previousElementSibling.value);
+    let numberOfBoxes = e.target.previousElementSibling.value;
+  }
+
   return {
     handleClick,
+    handleSubmit,
   };
 })();
+
 const sources = (() => {
-  const imageSrcCreater = () => {
+  function imageSrcCreater(amount) {
     let imageSrcList = [];
 
-    for (let index = 0; index < 8; index++) {
+    for (let index = 0; index < amount / 2; index++) {
       imageSrcList.push(`img${index}.jpg`);
     }
     imageSrcList = [...imageSrcList, ...imageSrcList];
-    return imageSrcList;
-  };
 
-  const randomNumbersArrayCreator = () => {
+    return imageSrcList;
+  }
+
+  function numbers(amount) {
     let randomNumArray = [];
-    while (randomNumArray.length < 16) {
-      let randomNum = Math.floor(Math.random() * 16);
+    while (randomNumArray.length < amount) {
+      let randomNum = Math.floor(Math.random() * amount);
 
       if (randomNumArray.indexOf(randomNum) === -1) {
         randomNumArray.push(randomNum);
       }
     }
     return randomNumArray;
-  };
+  }
 
-  const numbers = randomNumbersArrayCreator();
-  const imageSrcList = imageSrcCreater();
-  return { imageSrcList, numbers };
+  return { imageSrcCreater, numbers };
 })();
 
 const cacheDom = (() => {
   const boxArray = [];
 
-  function boxFactory() {
-    for (let index = 0; index < 16; index++) {
-      let randomNum = sources.numbers[index];
+  function boxFactory(amount) {
+    const randomNumArray = sources.numbers(amount);
+    const imageSourceList = sources.imageSrcCreater(amount);
+
+    for (let index = 0; index < amount; index++) {
+      let randomNum = randomNumArray[index];
       let boxWrapper = helpers.createHtmlElement("div", "box", null);
       let box = helpers.createHtmlElement(
         "div",
         `b${randomNum}`,
-        sources.imageSrcList[randomNum]
+        imageSourceList[randomNum]
       );
+
       box.classList.add("back");
       let content = helpers.createHtmlElement("div", "content", null);
       let Front = helpers.createHtmlElement("div", "front", null);
@@ -100,17 +110,61 @@ const cacheDom = (() => {
 
       boxArray.push(boxWrapper);
     }
+
     return boxArray;
   }
+
+  const pageElementFactory = () => {
+    const container = helpers.createHtmlElement(
+      "div",
+      "input-container",
+      null,
+      null
+    );
+    const inputNumber = helpers.createHtmlElement(
+      "input",
+      "input-number",
+      null,
+      null
+    );
+    inputNumber.type = "number";
+    const inputSubmit = helpers.createHtmlElement(
+      "input",
+      "input-submit",
+      null,
+      null
+    );
+    inputSubmit.type = "submit";
+    const infoOfNumber = helpers.createHtmlElement(
+      "div",
+      "info",
+      null,
+      "Choose between <low> and <high>"
+    );
+
+    container.appendChild(infoOfNumber);
+    container.appendChild(inputNumber);
+    container.appendChild(inputSubmit);
+
+    inputSubmit.addEventListener("click", eventListeners.handleSubmit);
+    return container;
+  };
+
   return {
     boxFactory,
+    pageElementFactory,
   };
 })();
 
 const renderDom = (() => {
-  let sixteenBox = cacheDom.boxFactory(16);
-  sixteenBox.forEach((box) => {
+  function name(params) {}
+  let amount = 10;
+
+  const boxes = cacheDom.boxFactory(amount);
+
+  boxes.forEach((box) => {
     helpers.main.appendChild(box);
     box.addEventListener("click", eventListeners.handleClick);
   });
+  main.appendChild(cacheDom.pageElementFactory());
 })();
