@@ -51,15 +51,18 @@ const eventListeners = (() => {
   };
 })();
 const sources = (() => {
-  let imageSrcList = [];
-  let randomNumArray = [];
+  const imageSrcCreater = () => {
+    let imageSrcList = [];
 
-  for (let index = 0; index < 8; index++) {
-    imageSrcList.push(`img${index}.jpg`);
-  }
-  imageSrcList = [...imageSrcList, ...imageSrcList];
+    for (let index = 0; index < 8; index++) {
+      imageSrcList.push(`img${index}.jpg`);
+    }
+    imageSrcList = [...imageSrcList, ...imageSrcList];
+    return imageSrcList;
+  };
 
   const randomNumbersArrayCreator = () => {
+    let randomNumArray = [];
     while (randomNumArray.length < 16) {
       let randomNum = Math.floor(Math.random() * 16);
 
@@ -71,7 +74,7 @@ const sources = (() => {
   };
 
   const numbers = randomNumbersArrayCreator();
-
+  const imageSrcList = imageSrcCreater();
   return { imageSrcList, numbers };
 })();
 
