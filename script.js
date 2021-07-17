@@ -1,7 +1,6 @@
-//const  = document.querySelector("");
-
 const helpers = (() => {
   const main = document.getElementById("main");
+
   function createHtmlElement(tag, className, src, content) {
     let element = document.createElement(tag);
     if (className) {
@@ -21,33 +20,30 @@ const helpers = (() => {
   };
 })();
 const eventListeners = (() => {
-  let temp = [];
+  let tempForImageSources = [];
   let tempForNode = [];
 
   function handleClick(e) {
     e.currentTarget.classList.add("flipped");
-
     let srcOfImg =
       e.currentTarget.children[0].children[0].style.backgroundImage;
 
     tempForNode.push(e.currentTarget);
-    temp.push(srcOfImg);
+    tempForImageSources.push(srcOfImg);
 
-    if (tempForNode.length === 2 && temp[0] === srcOfImg) {
+    if (tempForNode.length === 2 && tempForImageSources[0] === srcOfImg) {
       tempForNode.forEach((element) => {
         element.classList.add("fixed");
-
         element.removeEventListener("click", eventListeners.handleClick);
       });
-      console.log("succesfull match");
     }
     if (tempForNode.length === 3) {
       tempForNode[0].classList.remove("flipped");
       tempForNode[1].classList.remove("flipped");
       tempForNode.shift();
       tempForNode.shift();
-      temp.shift();
-      temp.shift();
+      tempForImageSources.shift();
+      tempForImageSources.shift();
     }
   }
   return {
@@ -94,9 +90,9 @@ const cacheDom = (() => {
       box.classList.add("back");
       let content = helpers.createHtmlElement("div", "content", null);
       let Front = helpers.createHtmlElement("div", "front", null);
+
       content.appendChild(box);
       content.appendChild(Front);
-
       boxWrapper.appendChild(content);
 
       boxArray.push(boxWrapper);
@@ -112,7 +108,6 @@ const renderDom = (() => {
   let sixteenBox = cacheDom.boxFactory(16);
   sixteenBox.forEach((box) => {
     helpers.main.appendChild(box);
-    // let clickHandler = eventListeners.handleClick(e);
     box.addEventListener("click", eventListeners.handleClick);
   });
 })();
