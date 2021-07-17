@@ -49,6 +49,7 @@ const eventListeners = (() => {
   function handleSubmit(e) {
     console.log(e.target.previousElementSibling.value);
     let numberOfBoxes = e.target.previousElementSibling.value;
+    renderDom.renderPage(numberOfBoxes);
   }
 
   return {
@@ -157,14 +158,21 @@ const cacheDom = (() => {
 })();
 
 const renderDom = (() => {
-  function name(params) {}
-  let amount = 10;
+  function cleanDom(params) {}
+  function initializePage(params) {}
 
-  const boxes = cacheDom.boxFactory(amount);
-
-  boxes.forEach((box) => {
-    helpers.main.appendChild(box);
-    box.addEventListener("click", eventListeners.handleClick);
-  });
   main.appendChild(cacheDom.pageElementFactory());
+
+  function renderPage(amount) {
+    const boxes = cacheDom.boxFactory(amount);
+
+    boxes.forEach((box) => {
+      helpers.main.appendChild(box);
+      box.addEventListener("click", eventListeners.handleClick);
+    });
+  }
+  return {
+    renderPage,
+    cleanDom,
+  };
 })();
